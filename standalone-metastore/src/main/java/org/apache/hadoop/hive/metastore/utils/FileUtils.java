@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
 
 public class FileUtils {
   private static final PathFilter SNAPSHOT_DIR_PATH_FILTER = new PathFilter() {
