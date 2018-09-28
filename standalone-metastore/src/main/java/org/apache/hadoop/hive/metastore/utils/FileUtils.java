@@ -341,7 +341,7 @@ public class FileUtils {
     }
     Path pathPattern = new Path(path, sb.toString());
     List<FileStatus> fileStatusList = new ArrayList<FileStatus>();
-    fileStatusList.addAll(fs.globStatus(pathPattern, FileUtils.HIDDEN_FILES_PATH_FILTER));
+    fileStatusList.addAll(Arrays.AsList(fs.globStatus(pathPattern, FileUtils.HIDDEN_FILES_PATH_FILTER)));
     return fileStatusList;
   }
 
