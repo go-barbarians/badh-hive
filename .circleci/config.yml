@@ -1,0 +1,60 @@
+# Java Maven CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: ubuntu:16.04
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      MAVEN_OPTS: -Xmx3200m
+      HADOOP_BUILD_NUMBER: 2.8.4-badh1
+      TEZ_BUILD_NUMBER: 0.9.2-badh1
+      HIVE_BUILD_NUMBER: 3.1.0-badh1
+    
+    steps:
+      - run: apt-get update && apt-get upgrade -y && apt-get install -y git python-pip
+
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "pom.xml" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: pip install awscli
+      - run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+      - run: aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+      - run: aws configure set default.region eu-west-1
+      - run: apt-get install -y maven openjdk-8-jdk
+
+      - run: aws s3 cp s3://mvn.barbarians.io/zookeeper-$ZK_BUILD_NUMBER-bin.jar /tmp
+      - run: aws s3 cp s3://mvn.barbarians.io/zookeeper-$ZK_BUILD_NUMBER-test.jar /tmp
+      - run: aws s3 cp --recursive s3://mvn.barbarians.io/hadoop/m2 ~/.m2
+      - run: aws s3 cp --recursive s3://mvn.barbarians.io/tez/m2 ~/.m2
+
+      - run: mvn install:install-file -Dfile=/tmp/zookeeper-$ZK_BUILD_NUMBER-bin.jar -DgroupId=org.apache.zookeeper -DartifactId=zookeeper -Dversion=$ZK_BUILD_NUMBER -Dpackaging=jar
+      - run: mvn install:install-file -Dfile=/tmp/zookeeper-$ZK_BUILD_NUMBER-test.jar -DgroupId=org.apache.zookeeper -DartifactId=zookeeper -Dversion=$ZK_BUILD_NUMBER -Dclassifier=tests -Dpackaging=test-jar
+
+      - run: mvn install package dependency:go-offline -DskipTests=true -Pdist -Dhadoop.version=$HADOOP_BUILD_NUMBER -Dtez.version=$TEZ_BUILD_NUMBER
+
+      - run: aws s3 cp /root/repo/packaging/target/apache-hive-$HIVE_BUILD_NUMBER-bin.tar.gz s3://mvn.barbarians.io
+      - run: aws s3 cp --recursive ~/.m2 s3://mvn.barbarians.io/hive/m2
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}

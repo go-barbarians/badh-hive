@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.hive</groupId>
     <artifactId>hive-it</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.0-badh1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -40,7 +40,7 @@
     <skip.accumulo.tests>true</skip.accumulo.tests>
     <!-- Must correspond with the Accumulo version specified in the pom -->
     <accumulo-thrift.version>0.9.1</accumulo-thrift.version>
-    <accumulo-htrace.version>3.1.0-incubating</accumulo-htrace.version>
+    <accumulo-htrace.version>3.1.0-badh1-incubating</accumulo-htrace.version>
     <test.dfs.mkdir>-mkdir -p</test.dfs.mkdir>
   </properties>
 
