@@ -18,13 +18,13 @@
   <parent>
     <artifactId>hive-standalone-metastore</artifactId>
     <groupId>org.apache.hive</groupId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>3.1.0-badh1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>hive-metastore-tools</artifactId>
   <name>Hive Metastore Tools</name>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>3.1.0-badh1</version>
 
   <packaging>pom</packaging>
 
@@ -34,7 +34,7 @@
   </modules>
 
   <properties>
-    <hive.version>4.0.0-SNAPSHOT</hive.version>
+    <hive.version>3.1.0-badh1</hive.version>
     <maven.surefire.version>2.20.1</maven.surefire.version>
     <checkstyle.conf.dir>${basedir}/checkstyle</checkstyle.conf.dir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
