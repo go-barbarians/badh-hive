@@ -340,7 +340,7 @@ public class FileUtils {
       sb.append(Path.SEPARATOR).append("*");
     }
     Path pathPattern = new Path(path, sb.toString());
-    List<FileSatus> fileStatusList = new ArrayList<FileStatus>();
+    List<FileStatus> fileStatusList = new ArrayList<FileStatus>();
     fileStatusList.addAll(fs.globStatus(pathPattern, FileUtils.HIDDEN_FILES_PATH_FILTER));
     return fileStatusList;
   }
