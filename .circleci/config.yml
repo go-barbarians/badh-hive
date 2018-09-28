@@ -49,7 +49,7 @@ jobs:
       - run: mvn install:install-file -Dfile=/tmp/zookeeper-$ZK_BUILD_NUMBER-bin.jar -DgroupId=org.apache.zookeeper -DartifactId=zookeeper -Dversion=$ZK_BUILD_NUMBER -Dpackaging=jar
       - run: mvn install:install-file -Dfile=/tmp/zookeeper-$ZK_BUILD_NUMBER-test.jar -DgroupId=org.apache.zookeeper -DartifactId=zookeeper -Dversion=$ZK_BUILD_NUMBER -Dclassifier=tests -Dpackaging=test-jar
 
-      - run: mvn install package dependency:go-offline -DskipTests=true -Pdist -Dhadoop.version=$HADOOP_BUILD_NUMBER -Dtez.version=$TEZ_BUILD_NUMBER
+      - run: mvn install package dependency:go-offline -DskipTests=true -Pdist -Dhadoop.version=$HADOOP_BUILD_NUMBER -Dtez.version=$TEZ_BUILD_NUMBER -Dzookeeper.version=$ZK_VERSION_NUMBER
 
       - run: aws s3 cp /root/repo/packaging/target/apache-hive-$HIVE_BUILD_NUMBER-bin.tar.gz s3://mvn.barbarians.io
       - run: aws s3 cp --recursive ~/.m2 s3://mvn.barbarians.io/hive/m2
