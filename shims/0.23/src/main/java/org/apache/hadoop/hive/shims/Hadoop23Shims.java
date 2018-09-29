@@ -1127,7 +1127,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   @Override
   public boolean runDistCp(List<Path> srcPaths, Path dst, Configuration conf) throws IOException {
-    DistCpOptions options = DistCpOptions.Builder(srcPaths, dst)
+    DistCpOptions options = new DistCpOptions.Builder(srcPaths, dst)
     .withSyncFolder(true)
     .withCRC(true)
     .preserve(FileAttribute.BLOCKSIZE)

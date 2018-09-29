@@ -164,7 +164,7 @@ public class HdfsUtils {
 
   public static boolean runDistCp(List<Path> srcPaths, Path dst, Configuration conf)
       throws IOException {
-    DistCpOptions options = DistCpOptions.Builder(srcPaths, dst)
+    DistCpOptions options = new DistCpOptions.Builder(srcPaths, dst)
     .withSyncFolder(true)
     .withCRC(true)
     .preserve(FileAttribute.BLOCKSIZE)
