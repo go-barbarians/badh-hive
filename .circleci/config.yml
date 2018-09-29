@@ -19,7 +19,7 @@ jobs:
     environment:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
-      HADOOP_BUILD_NUMBER: 2.8.4-badh1
+      HADOOP_BUILD_NUMBER: 3.1.2-badh1
       TEZ_BUILD_NUMBER: 0.9.2-badh1
       HIVE_BUILD_NUMBER: 3.1.0-badh1
       ZK_BUILD_NUMBER: 3.5.5-badh1
