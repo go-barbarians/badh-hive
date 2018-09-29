@@ -164,10 +164,11 @@ public class HdfsUtils {
 
   public static boolean runDistCp(List<Path> srcPaths, Path dst, Configuration conf)
       throws IOException {
-    DistCpOptions options = new DistCpOptions(srcPaths, dst);
-    options.setSyncFolder(true);
-    options.setSkipCRC(false);
-    options.shouldPreserve(FileAttribute.BLOCKSIZE);
+    DistCpOptions options = DistCpOptions.Builder(srcPaths, dst)
+    .withSyncFolder(true)
+    .withCRC(true)
+    .preserve(FileAttribute.BLOCKSIZE)
+    .build();
 
     // Creates the command-line parameters for distcp
     List<String> params = constructDistCpParams(srcPaths, dst, conf);
