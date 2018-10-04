@@ -249,9 +249,12 @@ if [ "$SKIP_HADOOPVERSION" = false ]; then
   hadoop_version_re="^([0-9]+)\.([0-9]+)(\.([0-9]+))?.*$"
   outcome=$(echo "$HADOOP_VERSION" | grep -E $hadoop_version_re)
   if [[ "$HADOOP_VERSION" == "$outcome" ]]; then
-      hadoop_major_ver=${BASH_REMATCH[1]}
-      hadoop_minor_ver=${BASH_REMATCH[2]}
-      hadoop_patch_ver=${BASH_REMATCH[4]}
+      hadoop_major_ver=$(regex_match -r "$hadoop_version_re" -t "$HADOOP_VERSION" -m 1)
+      hadoop_minor_ver=$(regex_match -r "$hadoop_version_re" -t "$HADOOP_VERSION" -m 2)
+      hadoop_patch_ver=$(regex_match -r "$hadoop_version_re" -t "$HADOOP_VERSION" -m 4)
+      if [[ $hadoop_patch_ver == "None" ]]; then
+          hadoop_patch_ver=
+      fi
   else
       echo "Unable to determine Hadoop version information."
       echo "'hadoop version' returned:"
@@ -259,7 +262,7 @@ if [ "$SKIP_HADOOPVERSION" = false ]; then
       exit 5
   fi
   
-  if [ "$hadoop_major_ver" -lt "1" -a  "$hadoop_minor_ver$hadoop_patch_ver" -lt "201" ]; then
+  if [ "$hadoop_major_ver" -lt "1" && "$hadoop_minor_ver$hadoop_patch_ver" -lt "201" ]; then
       echo "Hive requires Hadoop 0.20.x (x >= 1)."
       echo "'hadoop version' returned:"
       echo `$HADOOP version`

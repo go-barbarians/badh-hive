@@ -14,7 +14,7 @@
 # limitations under the License.
 
 does_jvm_support_ti(){
-  version=$( java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+  version=$( java -version 2>&1 | nawk -F '"' '/version/ {print $2}')
   if [[ "$version" < "1.5" ]]; then
       return 1
   else
