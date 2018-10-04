@@ -89,11 +89,11 @@ if [[ "$SERVICE" == "cli" && "$USE_BEELINE_FOR_HIVE_CLI" == "true" ]] ; then
   SERVICE="beeline"
 fi
 
-if [[ "$SERVICE" =~ ^(help|version|orcfiledump|rcfilecat|schemaTool|cleardanglingscratchdir|metastore|beeline|llapstatus|llap)$ ]] ; then
+if [[ "$SERVICE" = @(help|version|orcfiledump|rcfilecat|schemaTool|cleardanglingscratchdir|metastore|beeline|llapstatus|llap) ]] ; then
   SKIP_HBASECP=true
 fi
 
-if [[ "$SERVICE" =~ ^(help|schemaTool)$ ]] ; then
+if [[ "$SERVICE" = @(help|schemaTool) ]] ; then
   SKIP_HADOOPVERSION=true
 fi
 
@@ -246,9 +246,9 @@ if [ "$SKIP_HADOOPVERSION" = false ]; then
   
   # Save the regex to a var to workaround quoting incompatabilities
   # between Bash 3.1 and 3.2
-  hadoop_version_re="^([[:digit:]]+)\.([[:digit:]]+)(\.([[:digit:]]+))?.*$"
-  
-  if [[ "$HADOOP_VERSION" =~ $hadoop_version_re ]]; then
+  hadoop_version_re="^([0-9]+)\.([0-9]+)(\.([0-9]+))?.*$"
+  outcome=$(echo "$HADOOP_VERSION" | grep -E $hadoop_version_re)
+  if [[ "$HADOOP_VERSION" == "$outcome" ]]; then
       hadoop_major_ver=${BASH_REMATCH[1]}
       hadoop_minor_ver=${BASH_REMATCH[2]}
       hadoop_patch_ver=${BASH_REMATCH[4]}
@@ -346,9 +346,9 @@ else
   export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Djava.util.logging.config.file=$bin/../conf/parquet-logging.properties "
 fi
 
-if [[ "$SERVICE" =~ ^(hiveserver2|beeline|cli)$ ]] ; then
+if [[ "$SERVICE" = @(hiveserver2|beeline|cli) ]] ; then
   # If process is backgrounded, don't change terminal settings
-  if [[ ( ! $(ps -o stat= -p $$) =~ "+" ) && ! ( -p /dev/stdin ) && ( ! $(ps -o tty= -p $$) =~ "?" ) ]]; then
+  if [[ ( ! $(ps $$ | nawk '{ print $3 }' | tail -n 1) = "*+*" ) && ! ( -p /dev/stdin ) && ( ! $(ps $$ | nawk '{ print $3 }' | tail -n 1) = "*?*" ) ]]; then
     export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Djline.terminal=jline.UnsupportedTerminal"
   fi
 fi
