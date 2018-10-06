@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -89,11 +89,11 @@ if [[ "$SERVICE" == "cli" && "$USE_BEELINE_FOR_HIVE_CLI" == "true" ]] ; then
   SERVICE="beeline"
 fi
 
-if [[ "$SERVICE" = @(help|version|orcfiledump|rcfilecat|schemaTool|cleardanglingscratchdir|metastore|beeline|llapstatus|llap) ]] ; then
+if [[ "$SERVICE" =~ ^(help|version|orcfiledump|rcfilecat|schemaTool|cleardanglingscratchdir|metastore|beeline|llapstatus|llap)$ ]] ; then
   SKIP_HBASECP=true
 fi
 
-if [[ "$SERVICE" = @(help|schemaTool) ]] ; then
+if [[ "$SERVICE" =~ ^(help|schemaTool)$ ]] ; then
   SKIP_HADOOPVERSION=true
 fi
 
@@ -241,20 +241,17 @@ fi
 if [ "$SKIP_HADOOPVERSION" = false ]; then
   # Make sure we're using a compatible version of Hadoop
   if [ "x$HADOOP_VERSION" == "x" ]; then
-      HADOOP_VERSION=$($HADOOP version 2> /dev/null | nawk -F"\t" '/Hadoop/ {print $0}' | cut -d' ' -f 2);
+      HADOOP_VERSION=$($HADOOP version 2>&2 | awk -F"\t" '/Hadoop/ {print $0}' | cut -d' ' -f 2);
   fi
   
   # Save the regex to a var to workaround quoting incompatabilities
   # between Bash 3.1 and 3.2
-  hadoop_version_re="^([0-9]+)\.([0-9]+)(\.([0-9]+))?.*$"
-  outcome=$(echo "$HADOOP_VERSION" | grep -E $hadoop_version_re)
-  if [[ "$HADOOP_VERSION" == "$outcome" ]]; then
-      hadoop_major_ver=$(regex_match -r "$hadoop_version_re" -t "$HADOOP_VERSION" -m 1)
-      hadoop_minor_ver=$(regex_match -r "$hadoop_version_re" -t "$HADOOP_VERSION" -m 2)
-      hadoop_patch_ver=$(regex_match -r "$hadoop_version_re" -t "$HADOOP_VERSION" -m 4)
-      if [[ $hadoop_patch_ver == "None" ]]; then
-          hadoop_patch_ver=
-      fi
+  hadoop_version_re="^([[:digit:]]+)\.([[:digit:]]+)(\.([[:digit:]]+))?.*$"
+  
+  if [[ "$HADOOP_VERSION" =~ $hadoop_version_re ]]; then
+      hadoop_major_ver=${BASH_REMATCH[1]}
+      hadoop_minor_ver=${BASH_REMATCH[2]}
+      hadoop_patch_ver=${BASH_REMATCH[4]}
   else
       echo "Unable to determine Hadoop version information."
       echo "'hadoop version' returned:"
@@ -262,7 +259,7 @@ if [ "$SKIP_HADOOPVERSION" = false ]; then
       exit 5
   fi
   
-  if [[ "$hadoop_major_ver" -lt "1" && "$hadoop_minor_ver$hadoop_patch_ver" -lt "201" ]]; then
+  if [ "$hadoop_major_ver" -lt "1" -a  "$hadoop_minor_ver$hadoop_patch_ver" -lt "201" ]; then
       echo "Hive requires Hadoop 0.20.x (x >= 1)."
       echo "'hadoop version' returned:"
       echo `$HADOOP version`
@@ -349,9 +346,9 @@ else
   export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Djava.util.logging.config.file=$bin/../conf/parquet-logging.properties "
 fi
 
-if [[ "$SERVICE" = @(hiveserver2|beeline|cli) ]] ; then
+if [[ "$SERVICE" =~ ^(hiveserver2|beeline|cli)$ ]] ; then
   # If process is backgrounded, don't change terminal settings
-  if [[ ( ! $(ps $$ | nawk '{ print $3 }' | tail -n 1) = "*+*" ) && ! ( -p /dev/stdin ) && ( ! $(ps $$ | nawk '{ print $3 }' | tail -n 1) = "*?*" ) ]]; then
+  if [[ ( ! $(ps -o stat= -p $$) =~ "+" ) && ! ( -p /dev/stdin ) && ( ! $(ps -o tty= -p $$) =~ "?" ) ]]; then
     export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Djline.terminal=jline.UnsupportedTerminal"
   fi
 fi
