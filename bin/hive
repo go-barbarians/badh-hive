@@ -348,7 +348,7 @@ fi
 
 if [[ "$SERVICE" =~ ^(hiveserver2|beeline|cli)$ ]] ; then
   # If process is backgrounded, don't change terminal settings
-  if [[ ( ! $(ps -o stat= -p $$) =~ "+" ) && ! ( -p /dev/stdin ) && ( ! $(ps -o tty= -p $$) =~ "?" ) ]]; then
+  if [[ ( ! $(ps $$ | nawk '{ print $3 }' | tail -n 1) =~ "+" ) && ! ( -p /dev/stdin ) && ( ! $(ps $$ | nawk '{ print $2 }' | tail -n 1) =~ "?" ) ]]; then
     export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Djline.terminal=jline.UnsupportedTerminal"
   fi
 fi
