@@ -17,7 +17,6 @@
  */
 package org.apache.hadoop.hive.metastore.utils;
 
-import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
@@ -38,6 +37,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
 
 public class FileUtils {
   private static final PathFilter SNAPSHOT_DIR_PATH_FILTER = new PathFilter() {
@@ -341,7 +341,9 @@ public class FileUtils {
       sb.append(Path.SEPARATOR).append("*");
     }
     Path pathPattern = new Path(path, sb.toString());
-    return Lists.newArrayList(fs.globStatus(pathPattern, FileUtils.HIDDEN_FILES_PATH_FILTER));
+    List<FileStatus> fileStatusList = new ArrayList<FileStatus>();
+    fileStatusList.addAll(Arrays.asList(fs.globStatus(pathPattern, FileUtils.HIDDEN_FILES_PATH_FILTER)));
+    return fileStatusList;
   }
 
   /**
