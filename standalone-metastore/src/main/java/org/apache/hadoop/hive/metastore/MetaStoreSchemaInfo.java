@@ -204,7 +204,7 @@ public class MetaStoreSchemaInfo implements IMetaStoreSchemaInfo {
 
     for (int i = 0; i < dbVerParts.length; i++) {
       int dbVerPart = Integer.parseInt(dbVerParts[i]);
-      int hiveVerPart = Integer.parseInt(hiveVerParts[i]);
+      int hiveVerPart = Integer.parseInt(hiveVerParts[i].split("-")[0]);
       if (dbVerPart > hiveVerPart) {
         return true;
       } else if (dbVerPart < hiveVerPart) {
