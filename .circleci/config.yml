@@ -58,7 +58,7 @@ jobs:
 
       - run: aws s3 cp /root/repo/packaging/target/apache-hive-$HIVE_BUILD_NUMBER-bin.tar.gz s3://mvn.barbarians.io
 
-      - run: tar cf /tmp/m2.tar .m2; gzip /tmp/m2.tar
+      - run: cd ~; tar cf /tmp/m2.tar .m2; gzip /tmp/m2.tar
       - run: aws s3 cp /tmp/m2.tar.gz s3://mvn.barbarians.io/hive/m2.tar.gz
 
       - save_cache:
