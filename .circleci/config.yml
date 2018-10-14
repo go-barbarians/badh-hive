@@ -49,7 +49,7 @@ jobs:
       # - run: aws s3 cp --recursive s3://mvn.barbarians.io/hadoop/m2 ~/.m2
       - run: aws s3 cp --recursive s3://mvn.barbarians.io/tez/m2 ~/.m2
 
-      - run: push ~; tar xzf m2.tar.gz; popd
+      - run: pushd ~; tar xzf m2.tar.gz; popd
 
       - run: mvn install:install-file -Dfile=/tmp/zookeeper-$ZK_BUILD_NUMBER-bin.jar -DgroupId=org.apache.zookeeper -DartifactId=zookeeper -Dversion=$ZK_BUILD_NUMBER -Dpackaging=jar
       - run: mvn install:install-file -Dfile=/tmp/zookeeper-$ZK_BUILD_NUMBER-test.jar -DgroupId=org.apache.zookeeper -DartifactId=zookeeper -Dversion=$ZK_BUILD_NUMBER -Dclassifier=tests -Dpackaging=test-jar
