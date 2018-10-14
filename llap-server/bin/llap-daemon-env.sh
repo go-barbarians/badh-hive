@@ -29,7 +29,7 @@
 #export LLAP_DAEMON_BIN_HOME=
 
 # Set this to a path containing tez jars
-#export LLAP_DAEMON_USER_CLASSPATH=
+export LLAP_DAEMON_USER_CLASSPATH=$HADOOP_YARN_HOME/*:$HADOOP_YARN_HOME/lib/*
 
 # Logger setup for LLAP daemon
 #export LLAP_DAEMON_LOGGER=query-routing
