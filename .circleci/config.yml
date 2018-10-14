@@ -45,7 +45,7 @@ jobs:
 
       - run: aws s3 cp s3://mvn.barbarians.io/zookeeper-$ZK_BUILD_NUMBER-bin.jar /tmp
       - run: aws s3 cp s3://mvn.barbarians.io/zookeeper-$ZK_BUILD_NUMBER-test.jar /tmp
-      - run: aws s3 cp --recursive s3://mvn.barbarians.io/hadoop/m2.tar.gz ~
+      - run: aws s3 cp s3://mvn.barbarians.io/hadoop/m2.tar.gz ~/m2.tar.gz
       # - run: aws s3 cp --recursive s3://mvn.barbarians.io/hadoop/m2 ~/.m2
       - run: aws s3 cp --recursive s3://mvn.barbarians.io/tez/m2 ~/.m2
 
