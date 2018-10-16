@@ -25,6 +25,17 @@ yarnfile = """
         "cpus": 1,
         "memory": "%(container.mb)d"
       },
+      "placement_policy": {
+        "constraints": [
+          {
+            "type": "ANTI_AFFINITY",
+            "scope": "NODE",
+            "target_tags": [
+              "llap"
+            ]
+          }
+        ]
+      },
       "configuration": {
         "env": {
           "JAVA_HOME": "%(java_home)s",
@@ -39,7 +50,7 @@ yarnfile = """
           "LLAP_DAEMON_PID_DIR": "$PWD/lib/app/run/",
           "LLAP_DAEMON_LD_PATH": "%(hadoop_home)s/lib/native",
           "LLAP_DAEMON_OPTS": "%(daemon_args)s",
-
+          "LLAP_DAEMON_USER_CLASSPATH": "$LLAP_DAEMON_USER_CLASSPATH",
           "APP_ROOT": "<WORK_DIR>/app/install/",
           "APP_TMP_DIR": "<WORK_DIR>/tmp/"
         }
