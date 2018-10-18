@@ -147,6 +147,9 @@ def main(args):
 	if long(max_direct_memory) > 0:
 		daemon_args = " -XX:MaxDirectMemorySize=%s %s" % (max_direct_memory, daemon_args)
 	daemon_args = " -Dhttp.maxConnections=%s %s" % ((max(args.instances, resource.executors) + 1), daemon_args)
+
+        # Barbarians 2018/10/18: add container namespace awareness
+        daemon_args = " -XX:+UnlockExperimentalVMOptions %s" % daemon_args
 	vars = {
 		"home" : home,
 		"version" : version,
